@@ -1,185 +1,198 @@
-const CSV_FILE = "artikelen.csv";
-const CACHE_NAME = "magazijn-zoeker-v1";
+let artikelen = [];
 
-const searchInput = document.getElementById("searchInput");
-const clearBtn = document.getElementById("clearBtn");
-const resultsEl = document.getElementById("results");
-const statusText = document.getElementById("statusText");
-const countText = document.getElementById("countText");
-const template = document.getElementById("resultTemplate");
-const installBtn = document.getElementById("installBtn");
+const searchInput = document.getElementById("search");
+const clearBtn = document.getElementById("clear-btn");
+const resultsContainer = document.getElementById("results");
+const resultCount = document.getElementById("result-count");
 
-let allRows = [];
-let currentFilter = "";
-let deferredPrompt = null;
+async function laadCSV() {
+    try {
+        const response = await fetch("artikelen.csv");
+        const text = await response.text();
 
-function parseCSV(text) {
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuotes = false;
+        parseCSV(text);
 
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
+        toonResultaten([]);
+        resultCount.innerText = `${artikelen.length} artikelen geladen`;
 
-    if (char === '"' && inQuotes && next === '"') {
-      cell += '"';
-      i++;
-    } else if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      row.push(cell.trim());
-      cell = "";
-    } else if ((char === "\n" || char === "\r") && !inQuotes) {
-      if (char === "\r" && next === "\n") i++;
-      row.push(cell.trim());
-      if (row.some(Boolean)) rows.push(row);
-      row = [];
-      cell = "";
-    } else {
-      cell += char;
+    } catch (err) {
+        console.error(err);
+
+        resultsContainer.innerHTML = `
+            <div class="card">
+                CSV bestand kon niet geladen worden
+            </div>
+        `;
     }
-  }
-  if (cell || row.length) {
-    row.push(cell.trim());
-    if (row.some(Boolean)) rows.push(row);
-  }
-  return rows;
 }
 
-function normalize(value) {
-  return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function parseCSV(csv) {
+
+    const regels = csv.trim().split("\n");
+
+    const headers = regels[0]
+        .split(",")
+        .map(h => h.trim());
+
+    const uniek = new Set();
+
+    artikelen = regels
+        .slice(1)
+        .map(regel => {
+
+            const waardes = regel.split(",");
+
+            let obj = {};
+
+            headers.forEach((header, index) => {
+                obj[header] = waardes[index]?.trim() || "";
+            });
+
+            return obj;
+        })
+
+        .filter(item => {
+
+            const key =
+                item.Artikel +
+                item.Artikelomschrijving +
+                item.Magazijnlocatie;
+
+            if (uniek.has(key)) return false;
+
+            uniek.add(key);
+
+            return true;
+        });
 }
 
-function escapeHTML(value) {
-  return String(value || "").replace(/[&<>'"]/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", '"': "&quot;"
-  }[char]));
+function zoeken() {
+
+    const zoektekst =
+        searchInput.value
+        .toLowerCase()
+        .trim();
+
+    if (!zoektekst) {
+
+        toonResultaten([]);
+
+        resultCount.innerText =
+            "Klaar om te zoeken";
+
+        return;
+    }
+
+    const resultaten =
+        artikelen.filter(item => {
+
+            const tekst = `
+                ${item.Artikel}
+                ${item.Artikelomschrijving}
+                ${item.Magazijnlocatie}
+                ${item.Magazijn}
+                ${item.Vestiging}
+                ${item.Artikelsoort}
+                ${item.Goederengroep}
+                ${item["Goed.groep omschr."]}
+            `
+            .toLowerCase();
+
+            return tekst.includes(zoektekst);
+        });
+
+    toonResultaten(resultaten);
+
+    resultCount.innerText =
+        `${resultaten.length} resultaat`;
 }
 
-function highlight(value, query) {
-  const safe = escapeHTML(value || "-");
-  if (!query) return safe;
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return safe.replace(new RegExp(`(${escapedQuery})`, "ig"), "<mark>$1</mark>");
+function toonResultaten(data) {
+
+    if (data.length === 0) {
+
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                Geen resultaten
+            </div>
+        `;
+
+        return;
+    }
+
+    resultsContainer.innerHTML =
+        data.map(item => `
+
+        <div class="card">
+
+            <div class="artikelnummer">
+                ${item.Artikel}
+            </div>
+
+            <div class="omschrijving">
+                ${item.Artikelomschrijving}
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-box">
+                    <span>MAGAZIJN</span>
+                    <strong>
+                        ${item.Magazijn}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>VESTIGING</span>
+                    <strong>
+                        ${item.Vestiging}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>LOCATIE</span>
+                    <strong>
+                        ${item.Magazijnlocatie}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>SOORT</span>
+                    <strong>
+                        ${item.Artikelsoort}
+                    </strong>
+                </div>
+
+                <div class="info-box">
+                    <span>GROEP</span>
+                    <strong>
+                        ${item.Goederengroep}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    `).join("");
 }
 
-function rowsToObjects(rows) {
-  const header = rows.shift();
-  const keys = header.map(h => h.trim());
-  const seen = new Set();
+searchInput.addEventListener(
+    "input",
+    zoeken
+);
 
-  return rows.map(row => Object.fromEntries(keys.map((key, index) => [key, row[index] || ""])))
-    .filter(item => {
-      const uniqueKey = `${item.Artikel}|${item.Artikelomschrijving}|${item.Magazijnlocatie}|${item.Magazijn}`;
-      if (seen.has(uniqueKey)) return false;
-      seen.add(uniqueKey);
-      return true;
-    });
-}
+clearBtn.addEventListener(
+    "click",
+    () => {
 
-async function loadCSV() {
-  try {
-    const response = await fetch(`${CSV_FILE}?v=${Date.now()}`, { cache: "no-store" });
-    if (!response.ok) throw new Error("CSV niet gevonden");
-    const text = await response.text();
-    allRows = rowsToObjects(parseCSV(text));
-    statusText.textContent = "Klaar om te zoeken";
-    countText.textContent = `${allRows.length} unieke regels`;
-    render();
-  } catch (error) {
-    statusText.textContent = "Kon CSV niet laden. Controleer of artikelen.csv naast index.html staat.";
-    countText.textContent = "";
-  }
-}
+        searchInput.value = "";
 
-function render() {
-  const query = normalize(searchInput.value.trim());
-  const filter = normalize(currentFilter);
+        toonResultaten([]);
 
-  let matches = allRows;
+        resultCount.innerText =
+            "Klaar om te zoeken";
+    }
+);
 
-  if (filter) {
-    matches = matches.filter(item => normalize(Object.values(item).join(" ")).includes(filter));
-  }
-
-  if (query) {
-    const words = query.split(/\s+/).filter(Boolean);
-    matches = matches.filter(item => {
-      const haystack = normalize([
-        item.Artikel,
-        item.Artikelomschrijving,
-        item.Magazijnlocatie,
-        item.Magazijn,
-        item.Vestiging,
-        item.Artikelsoort,
-        item.Goederengroep,
-        item["Goed.groep omschr."]
-      ].join(" "));
-      return words.every(word => haystack.includes(word));
-    });
-  } else if (!filter) {
-    matches = allRows.slice(0, 25);
-  }
-
-  resultsEl.innerHTML = "";
-  countText.textContent = `${matches.length} resultaat${matches.length === 1 ? "" : "en"}`;
-
-  if (!matches.length) {
-    resultsEl.innerHTML = `<div class="empty">Geen resultaten gevonden.</div>`;
-    return;
-  }
-
-  matches.slice(0, 200).forEach(item => {
-    const node = template.content.cloneNode(true);
-    node.querySelector(".article-number").innerHTML = highlight(item.Artikel, searchInput.value.trim());
-    node.querySelector(".description").innerHTML = highlight(item.Artikelomschrijving, searchInput.value.trim());
-    node.querySelector(".location-pill").innerHTML = highlight(item.Magazijnlocatie || "Geen locatie", searchInput.value.trim());
-    node.querySelector(".magazijn").textContent = item.Magazijn || "-";
-    node.querySelector(".vestiging").textContent = item.Vestiging || "-";
-    node.querySelector(".soort").textContent = item.Artikelsoort || "-";
-    node.querySelector(".groep").textContent = item.Goederengroep || "-";
-    resultsEl.appendChild(node);
-  });
-
-  if (matches.length > 200) {
-    resultsEl.insertAdjacentHTML("beforeend", `<div class="empty">Eerste 200 resultaten getoond. Maak je zoekopdracht specifieker.</div>`);
-  }
-}
-
-searchInput.addEventListener("input", render);
-clearBtn.addEventListener("click", () => {
-  searchInput.value = "";
-  searchInput.focus();
-  render();
-});
-
-document.querySelectorAll(".quick-filters button").forEach(button => {
-  button.addEventListener("click", () => {
-    currentFilter = button.dataset.filter || "";
-    document.querySelectorAll(".quick-filters button").forEach(b => b.classList.remove("active"));
-    button.classList.add("active");
-    render();
-  });
-});
-
-window.addEventListener("beforeinstallprompt", event => {
-  event.preventDefault();
-  deferredPrompt = event;
-  installBtn.hidden = false;
-});
-
-installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  installBtn.hidden = true;
-});
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("service-worker.js"));
-}
-
-loadCSV();
+laadCSV();
