@@ -1,64 +1,131 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#111827" />
-  <title>Magazijn Zoeker</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Magazijn Zoeker</title>
+
+    <link
+        rel="manifest"
+        href="manifest.json"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 <body>
-  <main class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">Centraal magazijn</p>
-        <h1>Magazijn Zoeker</h1>
-      </div>
-      <button id="installBtn" class="ghost-btn" hidden>Installeren</button>
-    </header>
 
-    <section class="search-card">
-      <label for="searchInput">Zoek artikel, omschrijving of locatie</label>
-      <div class="search-row">
-        <input id="searchInput" type="search" placeholder="Bijv. keramiek, 1480551 of FOA065" autocomplete="off" />
-        <button id="clearBtn" title="Zoekveld leegmaken">×</button>
-      </div>
-      <div class="quick-filters">
-        <button data-filter="">Alles</button>
-        <button data-filter="PM1">PM1</button>
-        <button data-filter="PM2">PM2</button>
-        <button data-filter="FOA">FOA</button>
-        <button data-filter="CHEB">CHEB</button>
-      </div>
-    </section>
+    <div class="hero">
 
-    <section class="status-row">
-      <span id="statusText">CSV wordt geladen...</span>
-      <span id="countText"></span>
-    </section>
+        <div class="hero-content">
 
-    <section id="results" class="results"></section>
+            <div class="sub-title">
+                CENTRAAL MAGAZIJN
+            </div>
 
-    <template id="resultTemplate">
-      <article class="result-card">
-        <div class="result-main">
-          <div>
-            <p class="article-number"></p>
-            <h2 class="description"></h2>
-          </div>
-          <span class="location-pill"></span>
+            <h1>
+                Magazijn Zoeker
+            </h1>
+
+            <div class="search-card">
+
+                <label>
+                    Zoek artikel, omschrijving of locatie
+                </label>
+
+                <div class="search-row">
+
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="Bijvoorbeeld FOA065, keramiek of artikelnummer..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        id="clear-btn"
+                    >
+                        ✖
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-        <dl class="details-grid">
-          <div><dt>Magazijn</dt><dd class="magazijn"></dd></div>
-          <div><dt>Vestiging</dt><dd class="vestiging"></dd></div>
-          <div><dt>Soort</dt><dd class="soort"></dd></div>
-          <div><dt>Groep</dt><dd class="groep"></dd></div>
-        </dl>
-      </article>
-    </template>
-  </main>
 
-  <script src="app.js"></script>
+    </div>
+
+    <main>
+
+        <div class="result-header">
+
+            <div id="result-count">
+                Klaar om te zoeken
+            </div>
+
+        </div>
+
+        <div id="results">
+
+            <div class="empty">
+
+                Zoek op:
+
+                <br><br>
+
+                • Artikelnummer
+
+                <br>
+
+                • Omschrijving
+
+                <br>
+
+                • Locatie
+
+                <br>
+
+                • Groep
+
+                <br>
+
+                • Vestiging
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+
+    <script>
+
+        if (
+            "serviceWorker"
+            in navigator
+        ) {
+
+            navigator.serviceWorker
+                .register(
+                    "./service-worker.js"
+                );
+        }
+
+    </script>
+
 </body>
+
 </html>
