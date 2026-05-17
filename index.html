@@ -2,10 +2,21 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Magazijn Zoeker</title>
+
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <meta name="theme-color" content="#007bff">
 </head>
 
 <body>
@@ -13,12 +24,18 @@
     <div class="hero">
         <div class="hero-content">
 
-            <div class="sub-title">CENTRAAL MAGAZIJN</div>
+            <div class="sub-title">
+                CENTRAAL MAGAZIJN
+            </div>
 
-            <h1>Magazijn Zoeker</h1>
+            <h1>
+                Magazijn Zoeker
+            </h1>
 
             <div class="search-card">
-                <label>Zoek artikel, omschrijving of locatie</label>
+                <label for="search">
+                    Zoek artikel, omschrijving of locatie
+                </label>
 
                 <div class="search-row">
                     <input
@@ -28,7 +45,13 @@
                         autocomplete="off"
                     >
 
-                    <button id="clear-btn">✖</button>
+                    <button
+                        id="clear-btn"
+                        type="button"
+                        aria-label="Zoekveld leegmaken"
+                    >
+                        ✖
+                    </button>
                 </div>
             </div>
 
@@ -45,11 +68,15 @@
 
     <main>
         <div class="result-header">
-            <div id="result-count">CSV laden...</div>
+            <div id="result-count">
+                CSV laden...
+            </div>
         </div>
 
         <div id="results">
-            <div class="empty">Typ hierboven om te zoeken.</div>
+            <div class="empty">
+                Typ hierboven om te zoeken.
+            </div>
         </div>
     </main>
 
