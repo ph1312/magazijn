@@ -1,224 +1,210 @@
-:root {
-  --bg: #0f172a;
-  --panel: #111827;
-  --card: #ffffff;
-  --muted: #64748b;
-  --text: #0f172a;
-  --white: #f8fafc;
-  --accent: #f97316;
-  --accent-dark: #c2410c;
-  --line: #e2e8f0;
-  --shadow: 0 18px 40px rgba(15, 23, 42, .16);
+* {
+    box-sizing: border-box;
 }
 
-* { box-sizing: border-box; }
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, var(--bg) 0%, #1e293b 260px, #f1f5f9 260px);
-  color: var(--text);
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef3f8;
+    color: #071225;
 }
 
-.app-shell {
-  width: min(980px, 100%);
-  margin: 0 auto;
-  padding: 20px 14px 40px;
+.hero {
+    background: #101c31;
+    padding: 18px 14px 90px;
 }
 
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--white);
-  margin-bottom: 18px;
+.hero-content {
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.eyebrow {
-  margin: 0 0 4px;
-  color: #fed7aa;
-  font-size: .78rem;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  font-weight: 700;
+.sub-title {
+    color: #ffb36b;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 13px;
 }
 
-h1 { margin: 0; font-size: clamp(1.8rem, 6vw, 3rem); line-height: 1; }
-
-.ghost-btn {
-  border: 1px solid rgba(255,255,255,.25);
-  color: white;
-  background: rgba(255,255,255,.08);
-  border-radius: 999px;
-  padding: 10px 14px;
-  font-weight: 700;
+h1 {
+    color: white;
+    font-size: 42px;
+    margin: 12px 0 22px;
 }
 
 .search-card {
-  background: var(--card);
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255,255,255,.5);
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
 }
 
 .search-card label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 800;
+    display: block;
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 18px;
 }
 
 .search-row {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 10px;
 }
 
-input[type="search"] {
-  width: 100%;
-  border: 2px solid #cbd5e1;
-  border-radius: 16px;
-  font-size: 1.05rem;
-  padding: 14px 14px;
-  outline: none;
+#search {
+    flex: 1;
+    min-width: 0;
+    font-size: 20px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    border: 2px solid #ccd6e2;
 }
 
-input[type="search"]:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, .15);
+#clear-btn {
+    width: 58px;
+    border: none;
+    border-radius: 18px;
+    background: #ff7517;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-#clearBtn {
-  min-width: 50px;
-  border: none;
-  border-radius: 16px;
-  background: var(--accent);
-  color: white;
-  font-size: 1.6rem;
-  font-weight: 900;
+main {
+    max-width: 1100px;
+    margin: -55px auto 0;
+    padding: 0 14px 40px;
 }
 
-.quick-filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 4px 14px;
+    color: #34445a;
 }
 
-.quick-filters button {
-  border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: 700;
+.card {
+    background: white;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
 }
 
-.quick-filters button.active,
-.quick-filters button:focus {
-  background: var(--panel);
-  color: white;
-  border-color: var(--panel);
+.artikelnummer {
+    color: #d94b00;
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 8px;
 }
 
-.status-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 16px 4px 10px;
-  color: #475569;
-  font-size: .95rem;
+.omschrijving {
+    font-weight: 800;
+    font-size: 20px;
+    margin-bottom: 18px;
 }
 
-.results {
-  display: grid;
-  gap: 12px;
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
 }
 
-.result-card {
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+.info-box {
+    background: #f3f6fa;
+    border-radius: 16px;
+    padding: 14px;
 }
 
-.result-main {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
+.info-box span {
+    display: block;
+    color: #5b708d;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 8px;
 }
 
-.article-number {
-  margin: 0 0 4px;
-  color: var(--accent-dark);
-  font-weight: 900;
-  letter-spacing: .03em;
-}
-
-.description {
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.25;
-}
-
-.location-pill {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 74px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  background: #ffedd5;
-  color: #9a3412;
-  font-weight: 900;
-  border: 1px solid #fed7aa;
-}
-
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 14px 0 0;
-}
-
-.details-grid div {
-  background: #f8fafc;
-  border-radius: 14px;
-  padding: 10px;
-  min-width: 0;
-}
-
-dt {
-  font-size: .72rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  font-weight: 800;
-}
-
-dd {
-  margin: 3px 0 0;
-  font-weight: 800;
-  word-break: break-word;
+.info-box strong {
+    font-size: 18px;
 }
 
 .empty {
-  text-align: center;
-  background: white;
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px dashed #cbd5e1;
-  color: #475569;
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    color: #5b708d;
 }
 
-mark {
-  background: #fde68a;
-  padding: 0 2px;
-  border-radius: 4px;
+/* TELEFOON */
+@media (max-width: 700px) {
+
+    .hero {
+        padding: 16px 12px 75px;
+    }
+
+    h1 {
+        font-size: 34px;
+        line-height: 1.05;
+    }
+
+    .search-card {
+        border-radius: 22px;
+        padding: 16px;
+    }
+
+    .search-row {
+        gap: 8px;
+    }
+
+    #search {
+        font-size: 18px;
+        padding: 14px;
+    }
+
+    #clear-btn {
+        width: 52px;
+        font-size: 22px;
+    }
+
+    main {
+        margin-top: -45px;
+        padding: 0 12px 30px;
+    }
+
+    .card {
+        padding: 16px;
+        border-radius: 20px;
+    }
+
+    .omschrijving {
+        font-size: 18px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .info-box {
+        padding: 12px;
+    }
+
+    .info-box strong {
+        font-size: 17px;
+    }
 }
 
-@media (max-width: 720px) {
-  .details-grid { grid-template-columns: repeat(2, 1fr); }
-  .result-main { flex-direction: column; }
-  .location-pill { align-self: flex-start; }
+/* HELE KLEINE TELEFOONS */
+@media (max-width: 390px) {
+
+    h1 {
+        font-size: 30px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #search {
+        font-size: 16px;
+    }
 }
