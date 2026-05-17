@@ -1,0 +1,10 @@
+{
+  "name": "Magazijn Zoeker",
+  "short_name": "Magazijn",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#111827",
+  "description": "Zoekapp voor magazijnlocaties en artikelen.",
+  "icons": []
+}
