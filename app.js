@@ -1,5 +1,6 @@
 let artikelen = [];
 let actieveFilter = "alles";
+let zoekTimer = null;
 
 const searchInput = document.getElementById("search");
 const clearBtn = document.getElementById("clear-btn");
@@ -38,7 +39,26 @@ function parseCSV(csv) {
             obj[header] = waardes[index]?.trim() || "";
         });
 
+        obj.zoektekst = `
+            ${obj.Magazijn}
+            ${obj.Artikel}
+            ${obj.Artikelomschrijving}
+            ${obj.Magazijnlocatie}
+            ${obj.Vestiging}
+            ${obj.Artikelsoort}
+            ${obj.Goederengroep}
+            ${obj["Goed.groep omschr."]}
+        `.toLowerCase();
+
+        obj.filtertekst = `
+            ${obj.Artikelomschrijving}
+            ${obj.Magazijnlocatie}
+            ${obj.Goederengroep}
+            ${obj["Goed.groep omschr."]}
+        `.toUpperCase();
+
         return obj;
+
     }).filter(item => {
         const key = `${item.Artikel}-${item.Artikelomschrijving}-${item.Magazijnlocatie}`;
 
@@ -50,38 +70,26 @@ function parseCSV(csv) {
 }
 
 function zoeken() {
-    const zoektekst = searchInput.value.toLowerCase().trim();
+    const zoekwoorden = searchInput.value
+        .toLowerCase()
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
 
     let resultaten = artikelen;
 
     if (actieveFilter !== "alles") {
-        resultaten = resultaten.filter(item => {
-            const tekst = `
-                ${item.Artikelomschrijving}
-                ${item.Magazijnlocatie}
-                ${item.Goederengroep}
-                ${item["Goed.groep omschr."]}
-            `.toUpperCase();
-
-            return tekst.includes(actieveFilter);
-        });
+        resultaten = resultaten.filter(item =>
+            item.filtertekst.includes(actieveFilter)
+        );
     }
 
-    if (zoektekst) {
-        resultaten = resultaten.filter(item => {
-            const tekst = `
-                ${item.Magazijn}
-                ${item.Artikel}
-                ${item.Artikelomschrijving}
-                ${item.Magazijnlocatie}
-                ${item.Vestiging}
-                ${item.Artikelsoort}
-                ${item.Goederengroep}
-                ${item["Goed.groep omschr."]}
-            `.toLowerCase();
-
-            return tekst.includes(zoektekst);
-        });
+    if (zoekwoorden.length > 0) {
+        resultaten = resultaten.filter(item =>
+            zoekwoorden.every(woord =>
+                item.zoektekst.includes(woord)
+            )
+        );
     }
 
     toonResultaten(resultaten);
@@ -139,7 +147,13 @@ function toonResultaten(data) {
     `).join("");
 }
 
-searchInput.addEventListener("input", zoeken);
+searchInput.addEventListener("input", () => {
+    clearTimeout(zoekTimer);
+
+    zoekTimer = setTimeout(() => {
+        zoeken();
+    }, 120);
+});
 
 clearBtn.addEventListener("click", () => {
     searchInput.value = "";
