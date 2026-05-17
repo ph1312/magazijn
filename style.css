@@ -1,210 +1,293 @@
-* {
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef3f8;
-    color: #071225;
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#eef2f7;
+    color:#08152a;
 }
 
-.hero {
-    background: #101c31;
-    padding: 18px 14px 90px;
+.hero{
+    background:linear-gradient(
+        90deg,
+        #071020,
+        #15243f
+    );
+
+    padding:30px 20px 120px;
 }
 
-.hero-content {
-    max-width: 1100px;
-    margin: 0 auto;
+.hero-content{
+    max-width:1200px;
+    margin:auto;
 }
 
-.sub-title {
-    color: #ffb36b;
-    font-weight: 700;
-    letter-spacing: 2px;
-    font-size: 13px;
+.sub-title{
+    color:#ffbf72;
+    font-weight:700;
+    letter-spacing:2px;
+    margin-bottom:10px;
 }
 
-h1 {
-    color: white;
-    font-size: 42px;
-    margin: 12px 0 22px;
+h1{
+    color:white;
+    font-size:64px;
+    margin-bottom:25px;
 }
 
-.search-card {
-    background: white;
-    border-radius: 24px;
-    padding: 20px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+.search-card{
+    background:white;
+
+    padding:22px;
+
+    border-radius:30px;
+
+    box-shadow:
+    0 20px 40px rgba(
+        0,0,0,.12
+    );
 }
 
-.search-card label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 12px;
-    font-size: 18px;
+.search-card label{
+    display:block;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:16px;
 }
 
-.search-row {
-    display: flex;
-    gap: 10px;
+.search-row{
+    display:flex;
+
+    gap:12px;
 }
 
-#search {
-    flex: 1;
-    min-width: 0;
-    font-size: 20px;
-    padding: 16px 18px;
-    border-radius: 18px;
-    border: 2px solid #ccd6e2;
+#search{
+    flex:1;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    border:
+    2px solid #d6dce6;
+
+    font-size:20px;
 }
 
-#clear-btn {
-    width: 58px;
-    border: none;
-    border-radius: 18px;
-    background: #ff7517;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
+#clear-btn{
+    width:70px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#ff7a13;
+
+    color:white;
+
+    font-size:28px;
+
+    cursor:pointer;
 }
 
-main {
-    max-width: 1100px;
-    margin: -55px auto 0;
-    padding: 0 14px 40px;
+.filter-row{
+    display:flex;
+
+    gap:12px;
+
+    margin-top:18px;
+
+    flex-wrap:wrap;
 }
 
-.result-header {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 4px 14px;
-    color: #34445a;
+.filter-btn{
+    padding:
+    12px 18px;
+
+    border-radius:999px;
+
+    border:
+    1px solid #cbd3df;
+
+    background:white;
+
+    cursor:pointer;
+
+    font-weight:700;
 }
 
-.card {
-    background: white;
-    border-radius: 22px;
-    padding: 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+.filter-btn.active{
+    background:#08152a;
+
+    color:white;
 }
 
-.artikelnummer {
-    color: #d94b00;
-    font-weight: 800;
-    font-size: 18px;
-    margin-bottom: 8px;
+main{
+    max-width:1200px;
+
+    margin:
+    -70px auto 0;
+
+    padding:20px;
 }
 
-.omschrijving {
-    font-weight: 800;
-    font-size: 20px;
-    margin-bottom: 18px;
+.result-header{
+    display:flex;
+
+    justify-content:
+    space-between;
+
+    margin-bottom:18px;
+
+    color:#41526d;
 }
 
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+.card{
+    background:white;
+
+    border-radius:26px;
+
+    padding:24px;
+
+    margin-bottom:16px;
+
+    box-shadow:
+    0 12px 30px rgba(
+        0,0,0,.08
+    );
 }
 
-.info-box {
-    background: #f3f6fa;
-    border-radius: 16px;
-    padding: 14px;
+.artikelnummer{
+    color:#d65c00;
+
+    font-size:34px;
+
+    font-weight:800;
+
+    margin-bottom:12px;
 }
 
-.info-box span {
-    display: block;
-    color: #5b708d;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 8px;
+.omschrijving{
+    font-size:34px;
+
+    font-weight:800;
+
+    margin-bottom:20px;
 }
 
-.info-box strong {
-    font-size: 18px;
+.info-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        5,
+        1fr
+    );
+
+    gap:14px;
 }
 
-.empty {
-    background: white;
-    border-radius: 20px;
-    padding: 24px;
-    color: #5b708d;
+.info-box{
+    background:#f2f5f9;
+
+    border-radius:18px;
+
+    padding:16px;
 }
 
-/* TELEFOON */
-@media (max-width: 700px) {
+.info-box span{
+    display:block;
 
-    .hero {
-        padding: 16px 12px 75px;
-    }
+    font-size:13px;
 
-    h1 {
-        font-size: 34px;
-        line-height: 1.05;
-    }
+    color:#667892;
 
-    .search-card {
-        border-radius: 22px;
-        padding: 16px;
-    }
+    font-weight:700;
 
-    .search-row {
-        gap: 8px;
-    }
-
-    #search {
-        font-size: 18px;
-        padding: 14px;
-    }
-
-    #clear-btn {
-        width: 52px;
-        font-size: 22px;
-    }
-
-    main {
-        margin-top: -45px;
-        padding: 0 12px 30px;
-    }
-
-    .card {
-        padding: 16px;
-        border-radius: 20px;
-    }
-
-    .omschrijving {
-        font-size: 18px;
-    }
-
-    .info-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .info-box {
-        padding: 12px;
-    }
-
-    .info-box strong {
-        font-size: 17px;
-    }
+    margin-bottom:8px;
 }
 
-/* HELE KLEINE TELEFOONS */
-@media (max-width: 390px) {
+.info-box strong{
+    font-size:28px;
+}
 
-    h1 {
-        font-size: 30px;
-    }
+.empty{
+    background:white;
 
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
+    padding:25px;
 
-    #search {
-        font-size: 16px;
-    }
+    border-radius:22px;
+
+    text-align:center;
+}
+
+@media(
+max-width:900px
+){
+
+h1{
+font-size:42px;
+}
+
+.info-grid{
+grid-template-columns:
+1fr 1fr;
+}
+
+.omschrijving{
+font-size:24px;
+}
+
+.artikelnummer{
+font-size:24px;
+}
+
+.info-box strong{
+font-size:20px;
+}
+
+}
+
+@media(
+max-width:500px
+){
+
+.hero{
+padding:
+20px
+15px
+90px;
+}
+
+.search-row{
+flex-direction:row;
+}
+
+#search{
+font-size:16px;
+}
+
+#clear-btn{
+width:55px;
+}
+
+.info-grid{
+grid-template-columns:
+1fr;
+}
+
+main{
+margin-top:-50px;
+}
+
+h1{
+font-size:34px;
+}
+
 }
