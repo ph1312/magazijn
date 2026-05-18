@@ -55,7 +55,7 @@ function parseCSV(csv) {
                 obj[header] = waardes[index]?.trim() || "";
             });
 
-            obj.zoektekst = `
+            const normaleZoektekst = `
                 ${obj.Magazijn}
                 ${obj.Artikel}
                 ${obj.Artikelomschrijving}
@@ -65,6 +65,14 @@ function parseCSV(csv) {
                 ${obj.Goederengroep}
                 ${obj["Goed.groep omschr."]}
             `.toLowerCase();
+
+            obj.zoektekst = normaleZoektekst;
+
+            // Extra zoektekst zonder spaties.
+            // Daardoor werkt zoeken op bijvoorbeeld:
+            // "lijmkop" terwijl in CSV "lijm kop" staat.
+            obj.zoektekstZonderSpaties =
+                normaleZoektekst.replace(/\s+/g, "");
 
             obj.filtertekst = `
                 ${obj.Artikelomschrijving}
@@ -121,9 +129,15 @@ function zoeken() {
 
     if (zoekwoorden.length > 0) {
         resultaten = resultaten.filter(item =>
-            zoekwoorden.every(woord =>
-                item.zoektekst.includes(woord)
-            )
+            zoekwoorden.every(woord => {
+                const woordZonderSpaties =
+                    woord.replace(/\s+/g, "");
+
+                return (
+                    item.zoektekst.includes(woord) ||
+                    item.zoektekstZonderSpaties.includes(woordZonderSpaties)
+                );
+            })
         );
     }
 
