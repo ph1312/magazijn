@@ -2,6 +2,9 @@ let artikelen = [];
 let actieveFilter = "alles";
 let zoekTimer = null;
 
+const MAX_RESULTATEN_TONEN = 50;
+const MIN_TEKENS_ZOEKEN = 2;
+
 const searchInput = document.getElementById("search");
 const clearBtn = document.getElementById("clear-btn");
 const resultsContainer = document.getElementById("results");
@@ -16,12 +19,23 @@ async function laadCSV() {
         artikelen = parseCSV(text);
 
         resultCount.innerText = `${artikelen.length} artikelen geladen`;
-        resultsContainer.innerHTML = `<div class="empty">Typ hierboven om te zoeken.</div>`;
+
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                Typ minimaal ${MIN_TEKENS_ZOEKEN} tekens om te zoeken.
+            </div>
+        `;
 
     } catch (err) {
         console.error(err);
+
         resultCount.innerText = "CSV kon niet geladen worden";
-        resultsContainer.innerHTML = `<div class="empty">CSV bestand kon niet geladen worden.</div>`;
+
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                CSV bestand kon niet geladen worden.
+            </div>
+        `;
     }
 }
 
@@ -31,50 +45,71 @@ function parseCSV(csv) {
 
     const uniek = new Set();
 
-    return regels.slice(1).map(regel => {
-        const waardes = regel.split(",");
-        let obj = {};
+    return regels
+        .slice(1)
+        .map(regel => {
+            const waardes = regel.split(",");
+            let obj = {};
 
-        headers.forEach((header, index) => {
-            obj[header] = waardes[index]?.trim() || "";
+            headers.forEach((header, index) => {
+                obj[header] = waardes[index]?.trim() || "";
+            });
+
+            obj.zoektekst = `
+                ${obj.Magazijn}
+                ${obj.Artikel}
+                ${obj.Artikelomschrijving}
+                ${obj.Magazijnlocatie}
+                ${obj.Vestiging}
+                ${obj.Artikelsoort}
+                ${obj.Goederengroep}
+                ${obj["Goed.groep omschr."]}
+            `.toLowerCase();
+
+            obj.filtertekst = `
+                ${obj.Artikelomschrijving}
+                ${obj.Magazijnlocatie}
+                ${obj.Goederengroep}
+                ${obj["Goed.groep omschr."]}
+            `.toUpperCase();
+
+            return obj;
+        })
+        .filter(item => {
+            const key = `${item.Artikel}-${item.Artikelomschrijving}-${item.Magazijnlocatie}`;
+
+            if (uniek.has(key)) {
+                return false;
+            }
+
+            uniek.add(key);
+            return true;
         });
-
-        obj.zoektekst = `
-            ${obj.Magazijn}
-            ${obj.Artikel}
-            ${obj.Artikelomschrijving}
-            ${obj.Magazijnlocatie}
-            ${obj.Vestiging}
-            ${obj.Artikelsoort}
-            ${obj.Goederengroep}
-            ${obj["Goed.groep omschr."]}
-        `.toLowerCase();
-
-        obj.filtertekst = `
-            ${obj.Artikelomschrijving}
-            ${obj.Magazijnlocatie}
-            ${obj.Goederengroep}
-            ${obj["Goed.groep omschr."]}
-        `.toUpperCase();
-
-        return obj;
-
-    }).filter(item => {
-        const key = `${item.Artikel}-${item.Artikelomschrijving}-${item.Magazijnlocatie}`;
-
-        if (uniek.has(key)) return false;
-
-        uniek.add(key);
-        return true;
-    });
 }
 
 function zoeken() {
-    const zoekwoorden = searchInput.value
-        .toLowerCase()
-        .trim()
+    const invoer = searchInput.value.toLowerCase().trim();
+
+    const zoekwoorden = invoer
         .split(/\s+/)
         .filter(Boolean);
+
+    const aantalTekens = zoekwoorden.join("").length;
+
+    if (
+        aantalTekens < MIN_TEKENS_ZOEKEN &&
+        actieveFilter === "alles"
+    ) {
+        resultCount.innerText = `${artikelen.length} artikelen geladen`;
+
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                Typ minimaal ${MIN_TEKENS_ZOEKEN} tekens om te zoeken.
+            </div>
+        `;
+
+        return;
+    }
 
     let resultaten = artikelen;
 
@@ -92,14 +127,28 @@ function zoeken() {
         );
     }
 
-    toonResultaten(resultaten);
+    const beperkteResultaten =
+        resultaten.slice(0, MAX_RESULTATEN_TONEN);
 
-    resultCount.innerText = `${resultaten.length} resultaat`;
+    toonResultaten(beperkteResultaten);
+
+    if (resultaten.length > MAX_RESULTATEN_TONEN) {
+        resultCount.innerText =
+            `${resultaten.length} resultaten - eerste ${MAX_RESULTATEN_TONEN} getoond`;
+    } else {
+        resultCount.innerText =
+            `${resultaten.length} resultaat`;
+    }
 }
 
 function toonResultaten(data) {
     if (data.length === 0) {
-        resultsContainer.innerHTML = `<div class="empty">Geen resultaten gevonden.</div>`;
+        resultsContainer.innerHTML = `
+            <div class="empty">
+                Geen resultaten gevonden.
+            </div>
+        `;
+
         return;
     }
 
@@ -152,7 +201,7 @@ searchInput.addEventListener("input", () => {
 
     zoekTimer = setTimeout(() => {
         zoeken();
-    }, 120);
+    }, 200);
 });
 
 clearBtn.addEventListener("click", () => {
@@ -162,10 +211,14 @@ clearBtn.addEventListener("click", () => {
 
 filterButtons.forEach(button => {
     button.addEventListener("click", () => {
-        filterButtons.forEach(btn => btn.classList.remove("active"));
+        filterButtons.forEach(btn =>
+            btn.classList.remove("active")
+        );
+
         button.classList.add("active");
 
         actieveFilter = button.dataset.filter;
+
         zoeken();
     });
 });
